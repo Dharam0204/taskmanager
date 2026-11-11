@@ -70,4 +70,15 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
+const Task = require('../models/Task');
+const getTasks = async(req,res)=>{
+    try{
+        const tasks = await Task.find({userId:req.user.id});
+        req.json(tasks);
+    }catch(error){
+        res.status(500).json({message:error.message});
+}
+};
+
+
 module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
