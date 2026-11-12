@@ -80,5 +80,15 @@ const getTasks = async(req,res)=>{
 }
 };
 
+const addTasks = async(req,res)=>{
+    const {title, description, deadline} = req.body;
+    try{
+        const tasks = await Task.create({userId:req.user.id, title, description, deadline});
+        res.status(201).json(task);
+    }catch(error){
+        res.status(500).json({message:error.message});
+}
+};
+
 
 module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
