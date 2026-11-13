@@ -11,6 +11,9 @@ jobs:
   test:
     name: Run Backend Tests
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      NODE_ENV: ${{ vars.NODE_ENV }}
     timeout-minutes: 10
 
     steps:
