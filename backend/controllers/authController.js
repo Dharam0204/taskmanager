@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
         const validRoles = ['helpSeeker', 'helper'];
 
         if (role && !validRoles.includes(role)) {
-            return res.status(400).json({ message: 'Invalid user role' });
+            return res.status(400).json({ message: 'Invalid account role' });
         }
 
         const user = await User.create({
@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role || 'helpSeeker',
+            role: user.role,
             token: generateToken(user.id)
         });
     } catch (error) {
