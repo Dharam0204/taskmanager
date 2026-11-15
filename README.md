@@ -2,23 +2,25 @@
 
 **1. Project Overview**
 
-The Neighborhood Help Network is a web-based application designed to help community members organise and manage everyday assistance activities. It provides a platform for managing tasks across categories such as Gardening, Shopping, Transport and General Help.
+The Neighborhood Help Network is a web-based application designed to help community members organise and manage everyday assistance activities. It provides a platform for managing requests across categories such as Gardening, Shopping, Transport and General Help.
 
-The application includes user registration, login, logout, profile management and task management functionality. Users can create, view, update and delete tasks through a user-friendly interface.
+The application supports two user roles: **Help Seeker and Helper**. Help Seekers can create and manage assistance requests, while Helpers can view available requests, accept them and mark them as completed. The application tracks each request through Available, Accepted and Completed statuses.
 
-This project was developed as part of the QUT IFQ636 Software Lifecycle Management unit.
+The project was developed as part of the QUT IFQ636 Software Lifecycle Management unit.
 
 **2. Key Features**
 
-- User registration and login
-- User logout
-- User profile updates
-- Input validation and email validation
-- Create new tasks
-- View existing tasks
-- Update tasks
-- Delete tasks
-- Task management through a web-based interface
+-User registration with Help Seeker and Helper role selection
+-User login and logout
+-User profile updates
+-Input validation and email validation
+-Help Seekers can create, view, update and delete their own requests
+-Helpers can view available assistance requests
+-Helpers can accept available requests
+-Helpers can mark accepted requests as completed
+-Request status tracking: Available, Accepted and Completed
+-Role-based access control
+-MongoDB data persistence through a web-based interface
 
 **3. Technology Stack**
 
@@ -42,6 +44,8 @@ The application follows a client-server architecture.
 - **Backend:** Node.js and Express.js handle application requests, authentication and task management operations.
 - **Database:** MongoDB stores application data.
 - **Deployment:** The application is hosted on an AWS EC2 instance. Nginx serves the frontend and forwards API requests to the backend, which is managed using PM2.
+
+The application also implements role-based functionality. User roles are stored in MongoDB and returned during authentication. The backend uses authentication and authorisation checks to restrict operations according to the user's role. Task records store their current status and, where applicable, the Helper who accepted the request. The React frontend displays the appropriate dashboard and available actions for each role.
 
 **5. Prerequisites**
 
@@ -97,18 +101,14 @@ This starts the backend and frontend using the project's configured start script
 
 **7. Automated Testing**
 
-The backend includes automated unit tests using Mocha, Chai and Sinon.
+The backend automated test suite contains 21 passing unit tests covering task controller operations, including successful responses and error scenarios. The tests are executed using Mocha, Chai and Sinon.
+
+A GitHub Actions workflow is configured to run the backend tests automatically when changes are pushed to the main branch or when the workflow is manually triggered.
 
 To execute the backend tests:
 
-```bash
 cd backend
 npm test
-```
-
-The tests cover task management operations, including successful responses and error scenarios.
-
-A GitHub Actions workflow is also configured to run the backend tests automatically when changes are pushed to the main branch or when the workflow is manually triggered.
 
 **8. Deployment**
 
@@ -116,7 +116,7 @@ The application was deployed to the university-provided AWS EC2 environment for 
 
 Deployment URL: http://54.153.214.46
 
-The application was configured using:
+The deployment was configured using:
 
 AWS EC2 for hosting
 
@@ -124,14 +124,15 @@ Nginx to serve the frontend and route API requests
 
 PM2 to manage the backend Node.js process
 
-Availability note: The EC2 instance may be stopped outside the assessment demonstration period. Consequently, the public URL may not be continuously accessible. Screenshots in the assignment report provide evidence of the successful deployment and application functionality at the time of testing.
+Deployment note: The deployment URL represents the previously deployed version. The latest role-based functionality has been tested locally but has not yet been confirmed on the EC2 deployment.
+
+The EC2 instance may be stopped outside the assessment demonstration period. Consequently, the public URL may not be continuously accessible. Screenshots in the assignment report provide evidence of the deployment and application functionality at the time of testing.
 
 **9. Known Limitations**
 
-- The application is an academic project and is not intended to be a fully production-ready community platform.
-- The current implementation focuses on user authentication, profile management and core task management functionality.
-- Advanced community features such as real-time messaging, notifications and automated matching of people requesting and providing assistance are not included in the current implementation.
-- The GitHub Actions workflow currently automates backend testing; deployment to EC2 is performed separately rather than through an automated deployment pipeline.
+- The current implementation focuses on authentication, profile management, role-based assistance requests and the core request lifecycle.
+- Advanced community features such as real-time messaging, notifications and automated matching between Help Seekers and Helpers are not included.
+- The GitHub Actions workflow automates backend testing; deployment to the university-provided EC2 environment is performed separately rather than through an automated deployment pipeline.
 
 **10. Repository**
 
