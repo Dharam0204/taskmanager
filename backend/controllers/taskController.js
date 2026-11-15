@@ -1,20 +1,17 @@
 
 const Task = require('../models/Task');
 
+// Get tasks belonging to the logged-in user or accepted by the Helper
 const getTasks = async (req, res) => {
     try {
         const role = req.user.role || 'helpSeeker';
 
-        let filter;
-
-        if (role === 'helper') {
-            filter = {
+        const filter = role === 'helper'
+            ? {
                 acceptedBy: req.user.id,
                 status: { $in: ['accepted', 'completed'] }
-            };
-        } else {
-            filter = { userId: req.user.id };
-        }
+            }
+            : { userId: req.user.id };
 
         const tasks = await Task.find(filter);
         res.status(200).json(tasks);
@@ -23,6 +20,7 @@ const getTasks = async (req, res) => {
     }
 };
 
+// Get available requests for Helpers
 const getAvailableTasks = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helper') {
@@ -34,7 +32,10 @@ const getAvailableTasks = async (req, res) => {
         const tasks = await Task.find({
             userId: { $ne: req.user.id },
             acceptedBy: null,
-            status: 'available'
+            $or: [
+                { status: 'available' },
+                { status: { $exists: false } }
+            ]
         }).populate('userId', 'name');
 
         res.status(200).json(tasks);
@@ -43,6 +44,7 @@ const getAvailableTasks = async (req, res) => {
     }
 };
 
+// Create a request (Help Seeker only)
 const addTask = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helpSeeker') {
@@ -54,7 +56,9 @@ const addTask = async (req, res) => {
         const { title, description, category, deadline } = req.body;
 
         if (!title || !title.trim()) {
-            return res.status(400).json({ message: 'Request title is required' });
+            return res.status(400).json({
+                message: 'Request title is required'
+            });
         }
 
         const task = await Task.create({
@@ -74,6 +78,7 @@ const addTask = async (req, res) => {
     }
 };
 
+// Update a request (Help Seeker owner only)
 const updateTask = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helpSeeker') {
@@ -100,8 +105,10 @@ const updateTask = async (req, res) => {
         const { title, description, category, deadline } = req.body;
 
         if (title !== undefined) {
-            if (!title.trim()) {
-                return res.status(400).json({ message: 'Request title is required' });
+            if (typeof title !== 'string' || !title.trim()) {
+                return res.status(400).json({
+                    message: 'Request title is required'
+                });
             }
             task.title = title.trim();
         }
@@ -117,6 +124,7 @@ const updateTask = async (req, res) => {
     }
 };
 
+// Delete a request (Help Seeker owner only)
 const deleteTask = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helpSeeker') {
@@ -145,12 +153,15 @@ const deleteTask = async (req, res) => {
             userId: req.user.id
         });
 
-        res.status(200).json({ message: 'Request deleted successfully' });
+        res.status(200).json({
+            message: 'Request deleted successfully'
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+// Accept an available request (Helper only)
 const acceptTask = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helper') {
@@ -164,7 +175,10 @@ const acceptTask = async (req, res) => {
                 _id: req.params.id,
                 userId: { $ne: req.user.id },
                 acceptedBy: null,
-                status: 'available'
+                $or: [
+                    { status: 'available' },
+                    { status: { $exists: false } }
+                ]
             },
             {
                 $set: {
@@ -188,6 +202,7 @@ const acceptTask = async (req, res) => {
     }
 };
 
+// Complete an accepted request (Helper who accepted it only)
 const completeTask = async (req, res) => {
     try {
         if ((req.user.role || 'helpSeeker') !== 'helper') {
