@@ -28,52 +28,46 @@ const Register = () => {
   return (
     <div className="max-w-md mx-auto mt-20">
       <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center">Create an Account</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Register</h1>
 
         <input
           type="text"
           placeholder="Name"
+          required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
-          required
         />
 
         <input
           type="email"
           placeholder="Email"
+          required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
-          required
         />
 
         <input
           type="password"
           placeholder="Password"
+          required
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
-          required
         />
 
-        <label className="block font-medium mb-2">
-          I want to:
-        </label>
-
+        <label className="block mb-2 font-semibold">Register as:</label>
         <select
           value={formData.role}
           onChange={(e) => setFormData({ ...formData, role: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         >
-          <option value="helpSeeker">Request help (Help Seeker)</option>
-          <option value="helper">Provide help (Helper)</option>
+          <option value="helpSeeker">Help Seeker</option>
+          <option value="helper">Helper</option>
         </select>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white p-2 rounded"
-        >
+        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded">
           Register
         </button>
       </form>
