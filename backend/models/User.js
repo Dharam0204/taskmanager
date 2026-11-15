@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['helpSeeker', 'helper'],
         default: 'helpSeeker'
-    },
+    }
 });
 
 userSchema.pre('save', async function (next) {
